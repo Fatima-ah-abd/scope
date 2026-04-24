@@ -33,7 +33,7 @@ Update it as features move from mocked to working.
 
 - real microphone recording
 - real image picker
-- real video picker
+- `video` capture remains prototype-only and is now deferred from `v1`
 - broader provider integrations
 - persistence beyond in-memory app state
 - retrieval engine beyond seeded/mock behavior
@@ -53,7 +53,8 @@ Update it as features move from mocked to working.
 
 ## Next Likely Steps
 
-- connect image/video controls to real device pickers
+- remove or hide `video` from the `v1` capture path
+- begin replacing in-memory storage with SwiftData and filesystem-backed assets
+- connect image controls to a real device picker
 - connect audio capture to real recording state
 - improve auto-scope confidence with richer matching signals
-- begin replacing in-memory storage with SwiftData and filesystem-backed assets
