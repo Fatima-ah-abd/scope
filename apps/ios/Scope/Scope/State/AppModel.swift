@@ -27,19 +27,31 @@ final class AppModel {
         let reason: String
     }
 
-    @ObservationIgnored private let scopeThemeProvider = OpenAIScopeThemeProvider()
+    @ObservationIgnored private let scopeThemeProvider = ScopeThemeRouter()
     @ObservationIgnored private var themeGenerationInFlight: Set<UUID> = []
     @ObservationIgnored private var themeGenerationRequestIDs: [UUID: UUID] = [:]
 
     var scopes: [ScopeRecord]
     var sourceAssets: [SourceAssetRecord]
+    var providerCredentials: [ProviderCredentialRecord]
+    var providerConnections: [ProviderConnectionRecord]
+    var providerModelProfiles: [ProviderModelProfileRecord]
+    var providerRouteAssignments: [ProviderRouteAssignmentRecord]
     var homeOwnerName = ""
     var showScopeCardTimestamps = false
     var automationNotice: AutomationNoticeRecord?
 
-    init(scopes: [ScopeRecord] = SeedData.scopes, sourceAssets: [SourceAssetRecord] = []) {
+    init(
+        scopes: [ScopeRecord] = SeedData.scopes,
+        sourceAssets: [SourceAssetRecord] = [],
+        providerRuntime: ScopeProviderRuntimeState = .current
+    ) {
         self.scopes = scopes
         self.sourceAssets = sourceAssets
+        self.providerCredentials = providerRuntime.credentials
+        self.providerConnections = providerRuntime.connections
+        self.providerModelProfiles = providerRuntime.modelProfiles
+        self.providerRouteAssignments = providerRuntime.routeAssignments
     }
 
     var activeScopes: [ScopeRecord] {
@@ -67,7 +79,12 @@ final class AppModel {
     }
 
     var isScopeThemeProviderConfigured: Bool {
-        scopeThemeProvider.isConfigured
+        scopeThemeProvider.isConfigured(
+            credentials: providerCredentials,
+            connections: providerConnections,
+            modelProfiles: providerModelProfiles,
+            routeAssignments: providerRouteAssignments
+        )
     }
 
     func setHomeOwnerName(_ name: String) {
@@ -844,10 +861,11 @@ final class AppModel {
 
     // Theme generation is best-effort: keep the deterministic default until a validated provider recipe arrives.
     private func fetchThemeRecipe(for scopeID: UUID, forceRefresh: Bool) async {
-        guard scopeThemeProvider.isConfigured,
-              let scopeIndex = indexOfScope(scopeID) else {
+        guard let scopeIndex = indexOfScope(scopeID) else {
             return
         }
+
+        guard isScopeThemeProviderConfigured else { return }
 
         if !forceRefresh, scopes[scopeIndex].themeRecipe != nil {
             return
@@ -869,7 +887,13 @@ final class AppModel {
         }
 
         do {
-            let recipe = try await scopeThemeProvider.generateRecipe(for: scopeSnapshot)
+            let recipe = try await scopeThemeProvider.generateRecipe(
+                for: scopeSnapshot,
+                credentials: providerCredentials,
+                connections: providerConnections,
+                modelProfiles: providerModelProfiles,
+                routeAssignments: providerRouteAssignments
+            )
             guard themeGenerationRequestIDs[scopeID] == requestID else { return }
             guard let refreshedIndex = indexOfScope(scopeID) else { return }
 

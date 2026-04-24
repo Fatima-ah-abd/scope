@@ -64,6 +64,90 @@ enum ScopeCardSignalKind: String, Codable {
     case backgroundUpdate
 }
 
+enum ProviderKind: String, CaseIterable, Codable, Hashable {
+    case openAI = "openai"
+    case anthropic
+    case gemini
+
+    var displayName: String {
+        switch self {
+        case .openAI:
+            return "OpenAI"
+        case .anthropic:
+            return "Claude"
+        case .gemini:
+            return "Gemini"
+        }
+    }
+}
+
+enum ProviderCredentialStorageKind: String, CaseIterable, Codable, Hashable {
+    case environmentVariable
+    case keychain
+}
+
+enum ProviderModelTier: String, CaseIterable, Codable, Hashable {
+    case lightweight
+    case heavyweight
+    case custom
+}
+
+enum ProviderModelCapability: String, CaseIterable, Codable, Hashable {
+    case structuredOutputs
+    case clientToolUse
+    case imageInput
+    case largeContext
+}
+
+enum InferenceRouteKind: String, CaseIterable, Codable, Hashable {
+    case quick
+    case deep
+    case themeGeneration
+    case captureProcessing
+    case replyGeneration
+}
+
+struct ProviderCredentialRecord: Identifiable, Hashable, Codable {
+    var id = UUID()
+    var displayName: String
+    var storageKind: ProviderCredentialStorageKind
+    var secretReference: String
+    var lastValidatedAt: Date?
+    var createdAt: Date = .now
+    var updatedAt: Date = .now
+}
+
+struct ProviderConnectionRecord: Identifiable, Hashable, Codable {
+    var id = UUID()
+    var providerKind: ProviderKind
+    var displayName: String
+    var endpointOverride: String?
+    var credentialID: UUID
+    var isEnabled = true
+    var createdAt: Date = .now
+    var updatedAt: Date = .now
+}
+
+struct ProviderModelProfileRecord: Identifiable, Hashable, Codable {
+    var id = UUID()
+    var connectionID: UUID
+    var displayName: String
+    var modelID: String
+    var tier: ProviderModelTier
+    var capabilities: Set<ProviderModelCapability>
+    var isEnabled = true
+    var createdAt: Date = .now
+    var updatedAt: Date = .now
+}
+
+struct ProviderRouteAssignmentRecord: Identifiable, Hashable, Codable {
+    var id = UUID()
+    var route: InferenceRouteKind
+    var modelProfileID: UUID
+    var createdAt: Date = .now
+    var updatedAt: Date = .now
+}
+
 struct ScopeThemeRecipe: Hashable, Codable {
     var motif: ScopeArtMotif
     var heroStyle: ScopeHeroStyle
@@ -75,6 +159,7 @@ struct ScopeThemeRecipe: Hashable, Codable {
     var accentHex: String
     var patternHex: String
     var primaryTextHex: String
+    var providerKind: ProviderKind?
     var providerModelID: String?
     var generatedAt: Date?
 }
