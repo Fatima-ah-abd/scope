@@ -27,6 +27,10 @@ final class AppModel {
         let reason: String
     }
 
+    @ObservationIgnored private let scopeThemeProvider = OpenAIScopeThemeProvider()
+    @ObservationIgnored private var themeGenerationInFlight: Set<UUID> = []
+    @ObservationIgnored private var themeGenerationRequestIDs: [UUID: UUID] = [:]
+
     var scopes: [ScopeRecord]
     var sourceAssets: [SourceAssetRecord]
     var homeOwnerName = ""
@@ -62,6 +66,10 @@ final class AppModel {
         scopes.first(where: { $0.id == scopeID })
     }
 
+    var isScopeThemeProviderConfigured: Bool {
+        scopeThemeProvider.isConfigured
+    }
+
     func setHomeOwnerName(_ name: String) {
         homeOwnerName = name.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -69,6 +77,37 @@ final class AppModel {
     func markScopeOpened(_ scopeID: UUID) {
         guard let index = indexOfScope(scopeID) else { return }
         scopes[index].lastOpenedAt = .now
+    }
+
+    func prepareScopeDetail(_ scopeID: UUID) async {
+        markScopeOpened(scopeID)
+        await ensureThemeRecipe(for: scopeID)
+    }
+
+    func primeThemeRecipes(for scopeIDs: [UUID]) async {
+        var seenScopeIDs: Set<UUID> = []
+
+        for scopeID in scopeIDs where seenScopeIDs.insert(scopeID).inserted {
+            await ensureThemeRecipe(for: scopeID)
+        }
+    }
+
+    func ensureThemeRecipe(for scopeID: UUID) async {
+        await fetchThemeRecipe(for: scopeID, forceRefresh: false)
+    }
+
+    func regenerateThemeRecipe(for scopeID: UUID) async {
+        await fetchThemeRecipe(for: scopeID, forceRefresh: true)
+    }
+
+    func useDefaultTheme(for scopeID: UUID) {
+        guard let index = indexOfScope(scopeID) else { return }
+        if themeGenerationInFlight.contains(scopeID) {
+            themeGenerationRequestIDs[scopeID] = UUID()
+        } else {
+            themeGenerationRequestIDs[scopeID] = nil
+        }
+        scopes[index].themeRecipe = nil
     }
 
     func dismissAutomationNotice() {
@@ -801,6 +840,47 @@ final class AppModel {
                 .components(separatedBy: separators)
                 .filter { $0.count > 2 && !stopWords.contains($0) }
         )
+    }
+
+    // Theme generation is best-effort: keep the deterministic default until a validated provider recipe arrives.
+    private func fetchThemeRecipe(for scopeID: UUID, forceRefresh: Bool) async {
+        guard scopeThemeProvider.isConfigured,
+              let scopeIndex = indexOfScope(scopeID) else {
+            return
+        }
+
+        if !forceRefresh, scopes[scopeIndex].themeRecipe != nil {
+            return
+        }
+
+        guard themeGenerationInFlight.insert(scopeID).inserted else {
+            return
+        }
+
+        let requestID = UUID()
+        let scopeSnapshot = scopes[scopeIndex]
+        themeGenerationRequestIDs[scopeID] = requestID
+
+        defer {
+            themeGenerationInFlight.remove(scopeID)
+            if themeGenerationRequestIDs[scopeID] == requestID {
+                themeGenerationRequestIDs[scopeID] = nil
+            }
+        }
+
+        do {
+            let recipe = try await scopeThemeProvider.generateRecipe(for: scopeSnapshot)
+            guard themeGenerationRequestIDs[scopeID] == requestID else { return }
+            guard let refreshedIndex = indexOfScope(scopeID) else { return }
+
+            if !forceRefresh, scopes[refreshedIndex].themeRecipe != nil {
+                return
+            }
+
+            scopes[refreshedIndex].themeRecipe = recipe
+        } catch {
+            return
+        }
     }
 
     private func indexOfScope(_ scopeID: UUID) -> Int? {

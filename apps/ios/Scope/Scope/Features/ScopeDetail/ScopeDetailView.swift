@@ -116,8 +116,8 @@ struct ScopeDetailView: View {
                         dismissButton: .default(Text("OK"))
                     )
                 }
-                .task {
-                    appModel.markScopeOpened(scopeID)
+                .task(id: scopeID) {
+                    await appModel.prepareScopeDetail(scopeID)
                 }
             } else {
                 Text("This scope is unavailable.")
@@ -163,11 +163,7 @@ struct ScopeDetailView: View {
 
                 Spacer()
 
-                Image(systemName: "ellipsis")
-                    .font(.title3)
-                    .foregroundStyle(theme.heroMutedText)
-                    .padding(10)
-                    .background(theme.heroText.opacity(0.1), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                headerAccessory(for: scope, theme: theme)
             }
 
             switch theme.heroStyle {
@@ -187,6 +183,47 @@ struct ScopeDetailView: View {
                 .stroke(theme.heroText.opacity(0.12), lineWidth: 1)
         }
         .shadow(color: theme.shadowColor.opacity(0.36), radius: 18, x: 0, y: 10)
+    }
+
+    @ViewBuilder
+    private func headerAccessory(for scope: ScopeRecord, theme: ScopeThemeSpec) -> some View {
+        if showsThemeMenu(for: scope) {
+            Menu {
+                if appModel.isScopeThemeProviderConfigured {
+                    Button {
+                        Task {
+                            await appModel.regenerateThemeRecipe(for: scope.id)
+                        }
+                    } label: {
+                        Label(scope.themeRecipe == nil ? "Generate look" : "Refresh look", systemImage: "sparkles")
+                    }
+                }
+
+                if scope.themeRecipe != nil {
+                    Button {
+                        appModel.useDefaultTheme(for: scope.id)
+                    } label: {
+                        Label("Use default look", systemImage: "arrow.uturn.backward.circle")
+                    }
+                }
+            } label: {
+                headerAccessoryBadge(theme: theme)
+            }
+        } else {
+            headerAccessoryBadge(theme: theme)
+        }
+    }
+
+    private func showsThemeMenu(for scope: ScopeRecord) -> Bool {
+        appModel.isScopeThemeProviderConfigured || scope.themeRecipe != nil
+    }
+
+    private func headerAccessoryBadge(theme: ScopeThemeSpec) -> some View {
+        Image(systemName: "ellipsis")
+            .font(.title3)
+            .foregroundStyle(theme.heroMutedText)
+            .padding(10)
+            .background(theme.heroText.opacity(0.1), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private func editorialHeader(scope: ScopeRecord, theme: ScopeThemeSpec) -> some View {

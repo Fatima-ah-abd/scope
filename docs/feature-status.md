@@ -10,6 +10,7 @@ Update it as features move from mocked to working.
 - customizable home title with quiet inline name editing
 - scope detail view with receipts and lightweight controls
 - per-scope visual identity on home cards and scope detail with generated palette, motif, and layout treatment
+- optional OpenAI-backed scope theme generation layered on top of stable defaults when `OPENAI_API_KEY` is configured
 - sticky bottom capture dock
 - one-tap audio entry from home and scope detail
 - unified capture composer for text plus image/video attachments
@@ -33,7 +34,7 @@ Update it as features move from mocked to working.
 - real microphone recording
 - real image picker
 - real video picker
-- provider integrations
+- broader provider integrations
 - persistence beyond in-memory app state
 - retrieval engine beyond seeded/mock behavior
 

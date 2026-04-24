@@ -58,8 +58,12 @@ struct CreateScopeView: View {
                     }
 
                     Button("Create scope") {
-                        _ = appModel.createScope(title: title, note: note)
+                        let scope = appModel.createScope(title: title, note: note)
                         dismiss()
+
+                        Task {
+                            await appModel.ensureThemeRecipe(for: scope.id)
+                        }
                     }
                     .buttonStyle(ScopePrimaryButtonStyle())
                     .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)

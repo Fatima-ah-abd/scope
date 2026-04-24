@@ -1,6 +1,7 @@
 import SwiftUI
+import UIKit
 
-enum ScopeArtMotif {
+enum ScopeArtMotif: String, CaseIterable, Codable, Hashable {
     case storyboard
     case transit
     case strength
@@ -8,13 +9,13 @@ enum ScopeArtMotif {
     case wave
 }
 
-enum ScopeHeroStyle {
+enum ScopeHeroStyle: String, CaseIterable, Codable, Hashable {
     case editorial
     case itinerary
     case ledger
 }
 
-enum ScopeSectionLayout {
+enum ScopeSectionLayout: String, CaseIterable, Codable, Hashable {
     case focusFirst
     case memoryFirst
 }
@@ -54,7 +55,11 @@ struct ScopeThemeSpec {
     let shadowColor: Color
 
     static func forScope(_ scope: ScopeRecord) -> ScopeThemeSpec {
-        // Keep theme generation stable for re-entry while the prototype still uses on-device rules.
+        if let themeRecipe = scope.themeRecipe {
+            return fromRecipe(themeRecipe)
+        }
+
+        // Keep theme generation stable for re-entry while provider output is unavailable.
         let haystack = "\(scope.title) \(scope.summary) \(scope.categoryPreview.joined(separator: " "))".lowercased()
 
         if haystack.contains("trip") || haystack.contains("travel") || haystack.contains("japan") {
@@ -230,6 +235,59 @@ struct ScopeThemeSpec {
             chipFill: Color(hex: "EEDFD9"),
             chipText: Color(hex: "6F4945"),
             shadowColor: Color(hex: "8B5C57").opacity(0.12)
+        )
+    }
+
+    private static func fromRecipe(_ recipe: ScopeThemeRecipe) -> ScopeThemeSpec {
+        let pageCanvas = Color(hex: recipe.pageCanvasHex)
+        let surfaceFill = Color(hex: recipe.surfaceHex)
+        let heroFill = Color(hex: recipe.heroFillHex)
+        let accent = Color(hex: recipe.accentHex)
+        let patternColor = Color(hex: recipe.patternHex)
+        let primaryText = Color(hex: recipe.primaryTextHex)
+
+        let heroText = heroFill.prefersDarkText ? Color(hex: "1A1715") : .white
+        let heroMutedText = heroText.opacity(heroFill.prefersDarkText ? 0.68 : 0.76)
+        let secondaryText = primaryText.mixed(with: pageCanvas, amount: 0.42)
+        let lineColor = primaryText.mixed(with: surfaceFill, amount: 0.82)
+        let elevatedSurfaceFill = accent.mixed(with: surfaceFill, amount: 0.1)
+        let chipFill = accent.mixed(with: surfaceFill, amount: 0.16)
+        let chipText = chipFill.prefersDarkText ? primaryText : .white
+        let homeArtColor = patternColor.mixed(with: accent, amount: 0.38)
+        let pageGlowPrimary = accent.mixed(with: pageCanvas, amount: 0.72)
+        let pageGlowSecondary = patternColor.mixed(with: pageCanvas, amount: 0.7)
+
+        return ScopeThemeSpec(
+            motif: recipe.motif,
+            heroStyle: recipe.heroStyle,
+            sectionLayout: recipe.sectionLayout,
+            headerLabel: recipe.headerLabel,
+            homeCardFill: heroFill,
+            homeTitleColor: heroText,
+            homeSummaryColor: heroMutedText,
+            homeChipFill: heroText.opacity(heroFill.prefersDarkText ? 0.08 : 0.14),
+            homeChipTextColor: heroText,
+            homeArtColor: homeArtColor,
+            homeArtBackdrop: pageCanvas,
+            homeArtBackdropOpacity: 0.24,
+            homeTimestampColor: heroText.opacity(0.66),
+            homeShadowColor: accent.opacity(0.2),
+            pageCanvas: pageCanvas,
+            pageGlowPrimary: pageGlowPrimary,
+            pageGlowSecondary: pageGlowSecondary,
+            patternColor: patternColor,
+            heroFill: heroFill,
+            heroText: heroText,
+            heroMutedText: heroMutedText,
+            surfaceFill: surfaceFill,
+            elevatedSurfaceFill: elevatedSurfaceFill,
+            primaryText: primaryText,
+            secondaryText: secondaryText,
+            lineColor: lineColor,
+            accent: accent,
+            chipFill: chipFill,
+            chipText: chipText,
+            shadowColor: accent.opacity(0.14)
         )
     }
 }
@@ -574,5 +632,42 @@ private struct SparkShape: Shape {
         path.addLine(to: CGPoint(x: rect.minX + rect.width * 0.2, y: rect.maxY - rect.height * 0.2))
 
         return path
+    }
+}
+
+private extension Color {
+    var prefersDarkText: Bool {
+        let components = rgbaComponents
+        let luminance = (0.2126 * components.red) + (0.7152 * components.green) + (0.0722 * components.blue)
+        return luminance > 0.62
+    }
+
+    func mixed(with other: Color, amount: CGFloat) -> Color {
+        let clampedAmount = max(0, min(amount, 1))
+        let lhs = rgbaComponents
+        let rhs = other.rgbaComponents
+
+        return Color(
+            red: lhs.red + ((rhs.red - lhs.red) * clampedAmount),
+            green: lhs.green + ((rhs.green - lhs.green) * clampedAmount),
+            blue: lhs.blue + ((rhs.blue - lhs.blue) * clampedAmount),
+            opacity: lhs.alpha + ((rhs.alpha - lhs.alpha) * clampedAmount)
+        )
+    }
+
+    private var rgbaComponents: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+        let color = UIColor(self)
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+
+        if color.getRed(&red, green: &green, blue: &blue, alpha: &alpha) {
+            return (red, green, blue, alpha)
+        }
+
+        let resolved = color.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+        resolved.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        return (red, green, blue, alpha)
     }
 }

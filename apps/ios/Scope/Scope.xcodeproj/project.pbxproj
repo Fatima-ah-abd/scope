@@ -21,6 +21,7 @@
 		A0000000000000000000040C /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000010C /* Theme.swift */; };
 		A0000000000000000000040D /* CategoryChipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000010D /* CategoryChipView.swift */; };
 		A0000000000000000000040E /* ScopeThemeSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000010F /* ScopeThemeSpec.swift */; };
+		A00000000000000000000410 /* ScopeThemeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000110 /* ScopeThemeProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		A0000000000000000000010D /* CategoryChipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChipView.swift; sourceTree = "<group>"; };
 		A0000000000000000000010E /* Scope.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scope.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0000000000000000000010F /* ScopeThemeSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopeThemeSpec.swift; sourceTree = "<group>"; };
+		A00000000000000000000110 /* ScopeThemeProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopeThemeProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 			children = (
 				A00000000000000000000103 /* AppModel.swift */,
 				A00000000000000000000104 /* SeedData.swift */,
+				A00000000000000000000110 /* ScopeThemeProvider.swift */,
 			);
 			path = State;
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 				A0000000000000000000040C /* Theme.swift in Sources */,
 				A0000000000000000000040D /* CategoryChipView.swift in Sources */,
 				A0000000000000000000040E /* ScopeThemeSpec.swift in Sources */,
+				A00000000000000000000410 /* ScopeThemeProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

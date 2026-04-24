@@ -64,6 +64,21 @@ enum ScopeCardSignalKind: String, Codable {
     case backgroundUpdate
 }
 
+struct ScopeThemeRecipe: Hashable, Codable {
+    var motif: ScopeArtMotif
+    var heroStyle: ScopeHeroStyle
+    var sectionLayout: ScopeSectionLayout
+    var headerLabel: String
+    var pageCanvasHex: String
+    var surfaceHex: String
+    var heroFillHex: String
+    var accentHex: String
+    var patternHex: String
+    var primaryTextHex: String
+    var providerModelID: String?
+    var generatedAt: Date?
+}
+
 struct CaptureScopeSuggestion: Equatable {
     let scopeID: UUID?
     let assignmentSource: ScopeAssignmentSource
@@ -177,6 +192,7 @@ struct ScopeRecord: Identifiable, Hashable, Codable {
     var categories: [ScopeCategoryRecord]
     var recentMemory: [MemoryItemRecord]
     var cardSignals: [ScopeCardSignalRecord] = []
+    var themeRecipe: ScopeThemeRecipe?
     var lastOpenedAt: Date?
     var preferPinnedCategories = true
     var userAuthoredFirst = true

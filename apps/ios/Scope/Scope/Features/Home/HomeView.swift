@@ -69,6 +69,9 @@ struct HomeView: View {
         .sheet(isPresented: $isShowingSettings) {
             HomeSettingsView()
         }
+        .task(id: appModel.activeScopes.map(\.id)) {
+            await appModel.primeThemeRecipes(for: Array(appModel.activeScopes.prefix(3).map(\.id)))
+        }
         .confirmationDialog(
             automationDialogTitle,
             isPresented: Binding(
