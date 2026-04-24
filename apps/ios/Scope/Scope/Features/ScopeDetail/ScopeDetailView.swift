@@ -1,5 +1,11 @@
 import SwiftUI
 
+private enum ScopeDetailSection: Hashable {
+    case focus
+    case memory
+    case receipts
+}
+
 struct ScopeDetailView: View {
     @Environment(AppModel.self) private var appModel
     @State private var isShowingMemoryControls = false
@@ -14,18 +20,21 @@ struct ScopeDetailView: View {
     var body: some View {
         Group {
             if let scope = appModel.scope(for: scopeID) {
+                let theme = ScopeThemeSpec.forScope(scope)
+
                 ScrollView {
                     VStack(alignment: .leading, spacing: ScopeTheme.spacingXLarge) {
-                        header(for: scope)
-                        whatMattersCard(for: scope)
-                        recentMemorySection(for: scope)
-                        receiptsSection(for: scope)
+                        header(for: scope, theme: theme)
+
+                        ForEach(orderedSections(for: theme), id: \.self) { section in
+                            sectionView(section, scope: scope, theme: theme)
+                        }
                     }
                     .padding(.horizontal, ScopeTheme.spacingLarge)
                     .padding(.vertical, ScopeTheme.spacingXLarge)
                 }
                 .background {
-                    ScopeBackground().ignoresSafeArea()
+                    ScopePageBackground(theme: theme).ignoresSafeArea()
                 }
                 .safeAreaInset(edge: .bottom) {
                     VStack(spacing: 10) {
@@ -92,7 +101,7 @@ struct ScopeDetailView: View {
                 .sheet(isPresented: $isShowingMemoryControls) {
                     MemoryControlsView(scopeID: scopeID)
                         .presentationDetents([.large])
-                    }
+                }
                 .fullScreenCover(isPresented: $isShowingAudioCapture) {
                     CaptureComposerView(preferredScopeID: scopeID, initialMode: .audio)
                 }
@@ -122,92 +131,264 @@ struct ScopeDetailView: View {
         }
     }
 
-    private func header(for scope: ScopeRecord) -> some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: ScopeTheme.spacingSmall) {
-                Text(scope.title)
-                    .font(ScopeTheme.displayFont)
-                    .foregroundStyle(ScopeTheme.ink)
-
-                Text(scope.memoryMode.rawValue)
-                    .font(ScopeTheme.captionFont.weight(.medium))
-                    .foregroundStyle(ScopeTheme.mutedInk)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
-                    .background(ScopeTheme.elevatedSurface, in: Capsule())
-            }
-
-            Spacer()
-
-            Image(systemName: "ellipsis")
-                .font(.title3)
-                .foregroundStyle(ScopeTheme.mutedInk)
-                .padding(10)
-                .background(ScopeTheme.surface, in: RoundedRectangle(cornerRadius: ScopeTheme.radiusChip))
-                .overlay {
-                    RoundedRectangle(cornerRadius: ScopeTheme.radiusChip)
-                        .stroke(ScopeTheme.line, lineWidth: 1)
-                }
+    private func orderedSections(for theme: ScopeThemeSpec) -> [ScopeDetailSection] {
+        switch theme.sectionLayout {
+        case .focusFirst:
+            [.focus, .memory, .receipts]
+        case .memoryFirst:
+            [.memory, .focus, .receipts]
         }
     }
 
-    private func whatMattersCard(for scope: ScopeRecord) -> some View {
-        card {
-            VStack(alignment: .leading, spacing: ScopeTheme.spacingMedium) {
-                Text("What matters here")
-                    .font(ScopeTheme.sectionTitleFont)
-                    .foregroundStyle(ScopeTheme.ink)
+    @ViewBuilder
+    private func sectionView(_ section: ScopeDetailSection, scope: ScopeRecord, theme: ScopeThemeSpec) -> some View {
+        switch section {
+        case .focus:
+            whatMattersCard(for: scope, theme: theme)
+        case .memory:
+            recentMemorySection(for: scope, theme: theme)
+        case .receipts:
+            receiptsSection(for: scope, theme: theme)
+        }
+    }
+
+    private func header(for scope: ScopeRecord, theme: ScopeThemeSpec) -> some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top) {
+                Text(theme.headerLabel)
+                    .font(ScopeTheme.eyebrowFont)
+                    .textCase(.uppercase)
+                    .tracking(1.1)
+                    .foregroundStyle(theme.heroMutedText)
+
+                Spacer()
+
+                Image(systemName: "ellipsis")
+                    .font(.title3)
+                    .foregroundStyle(theme.heroMutedText)
+                    .padding(10)
+                    .background(theme.heroText.opacity(0.1), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            }
+
+            switch theme.heroStyle {
+            case .editorial:
+                editorialHeader(scope: scope, theme: theme)
+            case .itinerary:
+                itineraryHeader(scope: scope, theme: theme)
+            case .ledger:
+                ledgerHeader(scope: scope, theme: theme)
+            }
+        }
+        .padding(22)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(theme.heroFill, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .stroke(theme.heroText.opacity(0.12), lineWidth: 1)
+        }
+        .shadow(color: theme.shadowColor.opacity(0.36), radius: 18, x: 0, y: 10)
+    }
+
+    private func editorialHeader(scope: ScopeRecord, theme: ScopeThemeSpec) -> some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top, spacing: 18) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(scope.title)
+                        .font(.system(size: 34, weight: .black, design: .serif))
+                        .foregroundStyle(theme.heroText)
+                        .tracking(-0.45)
+
+                    Text(scope.summary)
+                        .font(ScopeTheme.bodyFont)
+                        .foregroundStyle(theme.heroMutedText)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 0)
+
+                heroStamp(theme: theme)
+            }
+
+            HStack(spacing: 8) {
+                modeBadge(title: scope.memoryMode.rawValue, foreground: theme.heroText, background: theme.heroText.opacity(0.14))
+
+                ForEach(scope.categoryPreview, id: \.self) { category in
+                    ScopeDetailChip(
+                        title: category,
+                        fill: theme.heroText.opacity(0.1),
+                        textColor: theme.heroText
+                    )
+                }
+            }
+        }
+    }
+
+    private func itineraryHeader(scope: ScopeRecord, theme: ScopeThemeSpec) -> some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top, spacing: 18) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(scope.title)
+                        .font(.system(size: 32, weight: .black, design: .serif))
+                        .foregroundStyle(theme.heroText)
+                        .tracking(-0.35)
+
+                    Text(scope.summary)
+                        .font(ScopeTheme.bodyFont)
+                        .foregroundStyle(theme.heroMutedText)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 0)
+
+                heroStamp(theme: theme)
+            }
+
+            Rectangle()
+                .fill(theme.heroText.opacity(0.18))
+                .frame(height: 1)
+
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Next up")
+                        .font(ScopeTheme.eyebrowFont)
+                        .foregroundStyle(theme.heroMutedText)
+
+                    Text(scope.cardSignals.first?.text ?? "Keep tightening the current plan.")
+                        .font(ScopeTheme.bodyFont.weight(.medium))
+                        .foregroundStyle(theme.heroText)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 12)
+
+                modeBadge(title: scope.memoryMode.rawValue, foreground: theme.heroText, background: theme.heroText.opacity(0.14))
+            }
+
+            HStack(spacing: 8) {
+                ForEach(scope.categoryPreview, id: \.self) { category in
+                    ScopeDetailChip(
+                        title: category,
+                        fill: theme.heroText.opacity(0.1),
+                        textColor: theme.heroText
+                    )
+                }
+            }
+        }
+    }
+
+    private func ledgerHeader(scope: ScopeRecord, theme: ScopeThemeSpec) -> some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .firstTextBaseline, spacing: 12) {
+                Text(scope.title)
+                    .font(.system(size: 33, weight: .black, design: .serif))
+                    .foregroundStyle(theme.heroText)
+                    .tracking(-0.3)
+
+                Spacer(minLength: 0)
+
+                modeBadge(title: scope.memoryMode.rawValue, foreground: theme.heroText, background: theme.heroText.opacity(0.14))
+            }
+
+            HStack(alignment: .top, spacing: 16) {
+                heroStamp(theme: theme)
 
                 Text(scope.summary)
                     .font(ScopeTheme.bodyFont)
-                    .foregroundStyle(ScopeTheme.ink)
+                    .foregroundStyle(theme.heroMutedText)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
 
-                HStack(spacing: ScopeTheme.spacingSmall) {
-                    ForEach(scope.categoryPreview, id: \.self) { category in
-                        CategoryChipView(title: category)
-                    }
+            Rectangle()
+                .fill(theme.heroText.opacity(0.18))
+                .frame(height: 1)
+
+            HStack(spacing: 8) {
+                ForEach(scope.categoryPreview, id: \.self) { category in
+                    ScopeDetailChip(
+                        title: category,
+                        fill: theme.heroText.opacity(0.1),
+                        textColor: theme.heroText
+                    )
                 }
-
-                Text("Updated \(scope.lastOpenedAt.map { ScopeFormatters.relative.localizedString(for: $0, relativeTo: .now) } ?? "recently")")
-                    .font(ScopeTheme.captionFont)
-                    .foregroundStyle(ScopeTheme.mutedInk)
             }
         }
     }
 
-    private func recentMemorySection(for scope: ScopeRecord) -> some View {
+    private func whatMattersCard(for scope: ScopeRecord, theme: ScopeThemeSpec) -> some View {
+        ScopeSurfaceCard(theme: theme) {
+            VStack(alignment: .leading, spacing: ScopeTheme.spacingMedium) {
+                Text("What matters here")
+                    .font(ScopeTheme.sectionTitleFont)
+                    .foregroundStyle(theme.primaryText)
+
+                Text(scope.summary)
+                    .font(ScopeTheme.bodyFont)
+                    .foregroundStyle(theme.primaryText)
+
+                HStack(spacing: ScopeTheme.spacingSmall) {
+                    ForEach(scope.categoryPreview, id: \.self) { category in
+                        ScopeDetailChip(
+                            title: category,
+                            fill: theme.chipFill,
+                            textColor: theme.chipText
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private func recentMemorySection(for scope: ScopeRecord, theme: ScopeThemeSpec) -> some View {
         VStack(alignment: .leading, spacing: ScopeTheme.spacingMedium) {
             HStack {
                 Text("Recent memory")
                     .font(ScopeTheme.sectionTitleFont)
-                    .foregroundStyle(ScopeTheme.ink)
+                    .foregroundStyle(theme.primaryText)
 
                 Spacer()
 
                 Button("Adjust") {
                     isShowingMemoryControls = true
                 }
-                .font(ScopeTheme.captionFont.weight(.medium))
-                .foregroundStyle(ScopeTheme.accent)
+                .buttonStyle(.plain)
+                .font(ScopeTheme.captionFont.weight(.semibold))
+                .foregroundStyle(theme.accent)
             }
 
             if scope.recentMemory.isEmpty {
-                card {
+                ScopeSurfaceCard(theme: theme) {
                     Text("Start with a note, photo, or voice memo. We’ll help organize what matters.")
                         .font(ScopeTheme.bodyFont)
-                        .foregroundStyle(ScopeTheme.ink)
+                        .foregroundStyle(theme.primaryText)
                 }
             } else {
                 ForEach(scope.recentMemory.prefix(2)) { memory in
-                    card {
-                        VStack(alignment: .leading, spacing: ScopeTheme.spacingSmall) {
+                    ScopeSurfaceCard(theme: theme) {
+                        VStack(alignment: .leading, spacing: ScopeTheme.spacingMedium) {
                             Text(memory.title)
                                 .font(ScopeTheme.sectionTitleFont)
-                                .foregroundStyle(ScopeTheme.ink)
+                                .foregroundStyle(theme.primaryText)
 
-                            Text("\(memory.reviewState.rawValue.capitalized) • \(memory.primaryCategory)")
-                                .font(ScopeTheme.captionFont)
-                                .foregroundStyle(ScopeTheme.moss)
+                            Text(memory.body)
+                                .font(ScopeTheme.bodyFont)
+                                .foregroundStyle(theme.secondaryText)
+                                .lineLimit(2)
+
+                            HStack(spacing: 8) {
+                                ScopeDetailChip(
+                                    title: memory.primaryCategory,
+                                    fill: theme.chipFill,
+                                    textColor: theme.chipText
+                                )
+
+                                if let sourceLabel = sourceLabel(for: memory.sourceKind) {
+                                    ScopeDetailChip(
+                                        title: sourceLabel,
+                                        fill: theme.elevatedSurfaceFill,
+                                        textColor: theme.secondaryText
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -215,7 +396,7 @@ struct ScopeDetailView: View {
         }
     }
 
-    private func receiptsSection(for scope: ScopeRecord) -> some View {
+    private func receiptsSection(for scope: ScopeRecord, theme: ScopeThemeSpec) -> some View {
         let visibleReceipts = scope.recentMemory.filter { $0.reviewState != .excluded }
 
         return VStack(alignment: .leading, spacing: ScopeTheme.spacingMedium) {
@@ -225,49 +406,95 @@ struct ScopeDetailView: View {
                 HStack {
                     Text("Used in this reply: \(min(visibleReceipts.count, 3)) items")
                         .font(ScopeTheme.bodyFont.weight(.medium))
-                        .foregroundStyle(ScopeTheme.ink)
+                        .foregroundStyle(theme.primaryText)
 
                     Spacer()
 
                     Image(systemName: isShowingReceipts ? "chevron.up" : "chevron.right")
-                        .foregroundStyle(ScopeTheme.mutedInk)
+                        .foregroundStyle(theme.secondaryText)
                 }
             }
             .buttonStyle(.plain)
 
             if isShowingReceipts {
                 ForEach(visibleReceipts.prefix(2)) { memory in
-                    card {
+                    ScopeSurfaceCard(theme: theme) {
                         VStack(alignment: .leading, spacing: ScopeTheme.spacingSmall) {
                             Text(memory.title)
                                 .font(ScopeTheme.sectionTitleFont)
-                                .foregroundStyle(ScopeTheme.ink)
+                                .foregroundStyle(theme.primaryText)
 
                             Text("category: \(memory.primaryCategory)")
                                 .font(ScopeTheme.captionFont)
-                                .foregroundStyle(ScopeTheme.mutedInk)
+                                .foregroundStyle(theme.secondaryText)
 
-                            Text("from this scope • \(memory.sourceKind.rawValue)")
+                            Text("from this scope • \(receiptSourceLabel(for: memory.sourceKind))")
                                 .font(ScopeTheme.captionFont)
-                                .foregroundStyle(ScopeTheme.mutedInk)
+                                .foregroundStyle(theme.secondaryText)
 
                             HStack {
                                 Button(memory.reviewState == .excluded ? "Restore" : "Exclude") {
                                     appModel.toggleMemoryExclusion(scopeID: scopeID, memoryID: memory.id)
                                 }
-                                .buttonStyle(ScopeInlineActionStyle())
+                                .buttonStyle(.plain)
+                                .font(ScopeTheme.captionFont.weight(.semibold))
+                                .foregroundStyle(theme.accent)
 
                                 Spacer()
 
                                 Button("Source") {
                                     selectedMemory = memory
                                 }
-                                .buttonStyle(ScopeInlineActionStyle())
+                                .buttonStyle(.plain)
+                                .font(ScopeTheme.captionFont.weight(.semibold))
+                                .foregroundStyle(theme.accent)
                             }
                         }
                     }
                 }
             }
+        }
+    }
+
+    private func heroStamp(theme: ScopeThemeSpec) -> some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(theme.heroText.opacity(0.1))
+                .frame(width: 62, height: 62)
+
+            ScopeIllustrationView(motif: theme.motif, color: theme.heroText, lineWeight: 0.7)
+                .frame(width: 28, height: 28)
+        }
+    }
+
+    private func modeBadge(title: String, foreground: Color, background: Color) -> some View {
+        Text(title)
+            .font(ScopeTheme.captionFont.weight(.semibold))
+            .foregroundStyle(foreground)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(background, in: Capsule())
+    }
+
+    private func sourceLabel(for sourceKind: MemorySourceKind) -> String? {
+        switch sourceKind {
+        case .userAuthored:
+            return nil
+        case .extracted:
+            return "from extraction"
+        case .simulated:
+            return "generated"
+        }
+    }
+
+    private func receiptSourceLabel(for sourceKind: MemorySourceKind) -> String {
+        switch sourceKind {
+        case .userAuthored:
+            return "note you added"
+        case .extracted:
+            return "extracted detail"
+        case .simulated:
+            return "generated summary"
         }
     }
 
@@ -318,5 +545,20 @@ struct ScopeDetailView: View {
         case let .reviewWaitingSignal(reference):
             activeAutomationDialog = .reviewWaitingSignal(reference: reference)
         }
+    }
+}
+
+private struct ScopeDetailChip: View {
+    let title: String
+    let fill: Color
+    let textColor: Color
+
+    var body: some View {
+        Text(title)
+            .font(ScopeTheme.captionFont.weight(.semibold))
+            .foregroundStyle(textColor)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(fill, in: Capsule())
     }
 }

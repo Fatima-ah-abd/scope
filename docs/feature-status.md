@@ -9,6 +9,7 @@ Update it as features move from mocked to working.
 - scope-first home with hierarchical scope cards
 - customizable home title with quiet inline name editing
 - scope detail view with receipts and lightweight controls
+- per-scope visual identity on home cards and scope detail with generated palette, motif, and layout treatment
 - sticky bottom capture dock
 - one-tap audio entry from home and scope detail
 - unified capture composer for text plus image/video attachments
@@ -25,6 +26,7 @@ Update it as features move from mocked to working.
   - low confidence stays unresolved and opens manual review on demand
 - settings toggle for optional scope-card timestamps
 - excluded memories are hidden from receipt surfaces
+- redundant scope recency and memory active-state labels are hidden from primary detail surfaces
 
 ## Placeholder / Mocked
 
