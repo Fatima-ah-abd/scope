@@ -1,0 +1,385 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A00000000000000000000401 /* ScopeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000101 /* ScopeApp.swift */; };
+		A00000000000000000000402 /* ScopeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000102 /* ScopeModels.swift */; };
+		A00000000000000000000403 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000103 /* AppModel.swift */; };
+		A00000000000000000000404 /* SeedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000104 /* SeedData.swift */; };
+		A00000000000000000000405 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000105 /* HomeView.swift */; };
+		A00000000000000000000406 /* ScopeCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000106 /* ScopeCardView.swift */; };
+		A00000000000000000000407 /* ScopeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000107 /* ScopeDetailView.swift */; };
+		A00000000000000000000408 /* QuickRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000108 /* QuickRecordView.swift */; };
+		A00000000000000000000409 /* CaptureReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000109 /* CaptureReviewView.swift */; };
+		A0000000000000000000040A /* MemoryControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000010A /* MemoryControlsView.swift */; };
+		A0000000000000000000040B /* CreateScopeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000010B /* CreateScopeView.swift */; };
+		A0000000000000000000040C /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000010C /* Theme.swift */; };
+		A0000000000000000000040D /* CategoryChipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000010D /* CategoryChipView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A00000000000000000000101 /* ScopeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopeApp.swift; sourceTree = "<group>"; };
+		A00000000000000000000102 /* ScopeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopeModels.swift; sourceTree = "<group>"; };
+		A00000000000000000000103 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		A00000000000000000000104 /* SeedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedData.swift; sourceTree = "<group>"; };
+		A00000000000000000000105 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		A00000000000000000000106 /* ScopeCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopeCardView.swift; sourceTree = "<group>"; };
+		A00000000000000000000107 /* ScopeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScopeDetailView.swift; sourceTree = "<group>"; };
+		A00000000000000000000108 /* QuickRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickRecordView.swift; sourceTree = "<group>"; };
+		A00000000000000000000109 /* CaptureReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureReviewView.swift; sourceTree = "<group>"; };
+		A0000000000000000000010A /* MemoryControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryControlsView.swift; sourceTree = "<group>"; };
+		A0000000000000000000010B /* CreateScopeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateScopeView.swift; sourceTree = "<group>"; };
+		A0000000000000000000010C /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		A0000000000000000000010D /* CategoryChipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryChipView.swift; sourceTree = "<group>"; };
+		A0000000000000000000010E /* Scope.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Scope.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A00000000000000000000303 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A00000000000000000000002 = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000004 /* Scope */,
+				A00000000000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A00000000000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A0000000000000000000010E /* Scope.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000004 /* Scope */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000005 /* App */,
+				A00000000000000000000006 /* Models */,
+				A00000000000000000000007 /* State */,
+				A00000000000000000000008 /* Features */,
+				A0000000000000000000000E /* UI */,
+			);
+			path = Scope;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000005 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000101 /* ScopeApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000006 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000102 /* ScopeModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000007 /* State */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000103 /* AppModel.swift */,
+				A00000000000000000000104 /* SeedData.swift */,
+			);
+			path = State;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000008 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000009 /* Home */,
+				A0000000000000000000000A /* ScopeDetail */,
+				A0000000000000000000000B /* Capture */,
+				A0000000000000000000000C /* MemoryControls */,
+				A0000000000000000000000D /* CreateScope */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000009 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000105 /* HomeView.swift */,
+				A00000000000000000000106 /* ScopeCardView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		A0000000000000000000000A /* ScopeDetail */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000107 /* ScopeDetailView.swift */,
+			);
+			path = ScopeDetail;
+			sourceTree = "<group>";
+		};
+		A0000000000000000000000B /* Capture */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000108 /* QuickRecordView.swift */,
+				A00000000000000000000109 /* CaptureReviewView.swift */,
+			);
+			path = Capture;
+			sourceTree = "<group>";
+		};
+		A0000000000000000000000C /* MemoryControls */ = {
+			isa = PBXGroup;
+			children = (
+				A0000000000000000000010A /* MemoryControlsView.swift */,
+			);
+			path = MemoryControls;
+			sourceTree = "<group>";
+		};
+		A0000000000000000000000D /* CreateScope */ = {
+			isa = PBXGroup;
+			children = (
+				A0000000000000000000010B /* CreateScopeView.swift */,
+			);
+			path = CreateScope;
+			sourceTree = "<group>";
+		};
+		A0000000000000000000000E /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A0000000000000000000000F /* Components */,
+				A00000000000000000000010 /* Theme */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		A0000000000000000000000F /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				A0000000000000000000010D /* CategoryChipView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000010 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				A0000000000000000000010C /* Theme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A00000000000000000000301 /* Scope */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A00000000000000000000305 /* Build configuration list for PBXNativeTarget "Scope" */;
+			buildPhases = (
+				A00000000000000000000302 /* Sources */,
+				A00000000000000000000303 /* Frameworks */,
+				A00000000000000000000304 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Scope;
+			packageProductDependencies = (
+			);
+			productName = Scope;
+			productReference = A0000000000000000000010E /* Scope.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A00000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2640;
+				LastUpgradeCheck = 2640;
+				TargetAttributes = {
+					A00000000000000000000301 = {
+						CreatedOnToolsVersion = 26.4.1;
+					};
+				};
+			};
+			buildConfigurationList = A00000000000000000000308 /* Build configuration list for PBXProject "Scope" */;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A00000000000000000000002;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A00000000000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A00000000000000000000301 /* Scope */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A00000000000000000000304 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A00000000000000000000302 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A00000000000000000000401 /* ScopeApp.swift in Sources */,
+				A00000000000000000000402 /* ScopeModels.swift in Sources */,
+				A00000000000000000000403 /* AppModel.swift in Sources */,
+				A00000000000000000000404 /* SeedData.swift in Sources */,
+				A00000000000000000000405 /* HomeView.swift in Sources */,
+				A00000000000000000000406 /* ScopeCardView.swift in Sources */,
+				A00000000000000000000407 /* ScopeDetailView.swift in Sources */,
+				A00000000000000000000408 /* QuickRecordView.swift in Sources */,
+				A00000000000000000000409 /* CaptureReviewView.swift in Sources */,
+				A0000000000000000000040A /* MemoryControlsView.swift in Sources */,
+				A0000000000000000000040B /* CreateScopeView.swift in Sources */,
+				A0000000000000000000040C /* Theme.swift in Sources */,
+				A0000000000000000000040D /* CategoryChipView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A00000000000000000000306 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Scope;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Scope uses the microphone to capture voice notes.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fatimaabdulah.scope;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		A00000000000000000000307 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Scope;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Scope uses the microphone to capture voice notes.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fatimaabdulah.scope;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		A00000000000000000000309 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+			};
+			name = Debug;
+		};
+		A0000000000000000000030A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A00000000000000000000305 /* Build configuration list for PBXNativeTarget "Scope" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A00000000000000000000306 /* Debug */,
+				A00000000000000000000307 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A00000000000000000000308 /* Build configuration list for PBXProject "Scope" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A00000000000000000000309 /* Debug */,
+				A0000000000000000000030A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A00000000000000000000001 /* Project object */;
+}
